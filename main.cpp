@@ -21,34 +21,26 @@ double integralTrapezoid(double a, double b, double e, tf f) {
 }
 
 double integralSimpson(double a, double b, double e, tf f) {
-    int n = 0;
-    double h = b - a, prevSum = 0, curSum = h / 3 * (f(a) + f(b));
+    double h = b - a, prevSum = 0, curSum = h * (f(a) + f(b)) / 3, prevSumBetween = f(a) + f(b), curSumBetween = 0;
 
     do {
         prevSum = curSum;
-        curSum = f(a) + f(b);
+        prevSumBetween += curSumBetween / 2;
+        curSumBetween = 0;
+
+        for (double x = a + h / 2; x < b; x += h)
+            curSumBetween += f(x);
+
+        curSumBetween *= 4;
         h /= 2;
-
-        int index = 0;
-
-        for (double x = a + h; x < b; x += h) {
-            index++;
-
-            if (index % 2 == 1)
-                curSum += 4 * f(x);
-            else
-                curSum += 2 * f(x);
-        }
-
-        curSum *= h;
-        curSum /= 3;
+        curSum = h * (prevSumBetween + curSumBetween) / 3;
     } while (fabs(prevSum - curSum) >= e);
 
     return curSum;
 }
 
 double exF1(double x) {
-    return x*x;
+    return sqrt(x);
 }
 
 int main() {
